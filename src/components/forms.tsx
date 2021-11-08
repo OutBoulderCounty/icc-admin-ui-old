@@ -1,5 +1,6 @@
 import * as React from "react"
 import { useQuery } from "react-query"
+import { useAuthUser } from "@frontegg/react"
 
 import Loader from "./loader"
 import ErrorComponent from "./error"
@@ -22,34 +23,36 @@ const Active: React.FC<ActiveProps> = ({ isActive, className, children }) => {
 }
 
 type Form = {
-  _id: string
+  id: string
   name: string
   required: boolean
   live: boolean
+}
+
+type Forms = {
+  forms: Form[]
 }
 
 type Error = {
   error: string
 }
 
-const Forms: React.FC = () => {
-  const { data, isLoading, error } = useQuery<Form[], Error>(
+const FormsComponent: React.FC = () => {
+  const user = useAuthUser()
+  const { data, isLoading, error } = useQuery<Forms, Error>(
     "forms",
     async () => {
-      const audience = "https://api.inclusivecareco.org"
-      const scope = "admin:all"
-      // TODO: authenticate
-      const token = ""
       return await (
-        await fetch(`${process.env.GATSBY_API_URL}/forms`, {
+        await fetch(`${process.env.REACT_APP_API_URL}/forms`, {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${user.accessToken}`,
             "Content-Type": "application/json",
           },
         })
       ).json()
     }
   )
+
   if (isLoading) {
     return <Loader />
   }
@@ -88,9 +91,9 @@ const Forms: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="overflow-y-scroll">
-                {data?.map((form, formIdx) => (
+                {data?.forms.map((form, formIdx) => (
                   <tr
-                    key={form._id}
+                    key={form.id}
                     className={formIdx % 2 === 0 ? "bg-white" : "bg-gray-50"}
                   >
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
@@ -125,4 +128,4 @@ const Forms: React.FC = () => {
   )
 }
 
-export default Forms
+export default FormsComponent

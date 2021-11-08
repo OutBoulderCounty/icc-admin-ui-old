@@ -1,7 +1,8 @@
 import * as React from "react"
 import { Disclosure } from "@headlessui/react"
 import { MenuIcon, XIcon } from "@heroicons/react/outline"
-import { useLocation, LinkProps } from "react-router-dom"
+import { useLocation, LinkProps, Link } from "react-router-dom"
+import { AuthorizedContent, useAuthUser } from "@frontegg/react"
 
 import Button from "./button"
 
@@ -15,6 +16,7 @@ type navItem = {
   Icon: React.FC<IconProps>
   className?: string
   Link: React.FC<LinkProps>
+  adminContent?: boolean
 }
 
 type navOptions = {
@@ -42,14 +44,7 @@ const NavItem: React.FC<navItem> = (item) => {
 }
 
 const NavBar: React.FC<navOptions> = ({ items }) => {
-  const logoutFn = () => {
-    console.log("loggin out")
-    // TODO: logout
-    // logout({
-    //   returnTo: window.location.origin,
-    // })
-    return null
-  }
+  const user = useAuthUser()
   return (
     <Disclosure as="nav" className="bg-white shadow max-h-max">
       {({ open }) => (
@@ -69,23 +64,41 @@ const NavBar: React.FC<navOptions> = ({ items }) => {
                   </Disclosure.Button>
                 </div>
                 <div className="hidden md:ml-6 md:flex md:space-x-8">
-                  {items.map((item) => (
-                    <NavItem
-                      name={item.name}
-                      path={item.path}
-                      Icon={item.Icon}
-                      key={item.name}
-                      className="inline-flex items-center px-1 pt-1 border-b-2"
-                      Link={item.Link}
-                    />
-                  ))}
+                  {items.map((item) => {
+                    const Item: React.FC = () => (
+                      <NavItem
+                        name={item.name}
+                        path={item.path}
+                        Icon={item.Icon}
+                        className="inline-flex items-center px-1 pt-1 border-b-2"
+                        Link={item.Link}
+                      />
+                    )
+                    if (item.adminContent) {
+                      return (
+                        <AuthorizedContent
+                          requiredRoles={["Admin"]}
+                          key={item.name}
+                        >
+                          <Item />
+                        </AuthorizedContent>
+                      )
+                    }
+                    return <Item key={item.name} />
+                  })}
                 </div>
               </div>
               <div className="flex items-center">
                 <div className="flex-shrink-0">
-                  <Button color="violet" onClick={logoutFn}>
-                    Logout
-                  </Button>
+                  {user ? (
+                    <Link to="/account/logout">
+                      <Button color="violet">Logout</Button>
+                    </Link>
+                  ) : (
+                    <Link to="/account/login">
+                      <Button color="violet">Login</Button>
+                    </Link>
+                  )}
                 </div>
               </div>
             </div>

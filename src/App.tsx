@@ -1,13 +1,18 @@
 import * as React from "react"
 import { BrowserRouter } from "react-router-dom"
+import { QueryClient, QueryClientProvider } from "react-query"
 
 import Dash from "./components/dash"
 
+const queryClient = new QueryClient()
+
 const App: React.FC = () => {
   return (
-    <BrowserRouter>
-      <Dash />
-    </BrowserRouter>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <Dash />
+      </BrowserRouter>
+    </QueryClientProvider>
   )
 }
 
