@@ -28,12 +28,16 @@ type Form = {
   live: boolean
 }
 
+type Forms = {
+  forms: Form[]
+}
+
 type Error = {
   error: string
 }
 
-const Forms: React.FC = () => {
-  const { data, isLoading, error } = useQuery<Form[], Error>(
+const FormsComponent: React.FC = () => {
+  const { data, isLoading, error } = useQuery<Forms, Error>(
     "forms",
     async () => {
       const audience = "https://api.inclusivecareco.org"
@@ -88,7 +92,7 @@ const Forms: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="overflow-y-scroll">
-                {data?.map((form, formIdx) => (
+                {data?.forms?.map((form, formIdx) => (
                   <tr
                     key={form._id}
                     className={formIdx % 2 === 0 ? "bg-white" : "bg-gray-50"}
@@ -125,4 +129,4 @@ const Forms: React.FC = () => {
   )
 }
 
-export default Forms
+export default FormsComponent
