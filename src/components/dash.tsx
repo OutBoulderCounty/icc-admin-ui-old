@@ -1,13 +1,15 @@
 import * as React from "react"
 import { Dialog, Transition } from "@headlessui/react"
 import { HomeIcon, XIcon, ClipboardIcon } from "@heroicons/react/outline"
-import { Routes, Route, Link } from "react-router-dom"
-import { QueryClient, QueryClientProvider } from "react-query"
+import { Routes, Route, Link, useSearchParams } from "react-router-dom"
+import { useMutation } from "react-query"
+import { useCookies } from "react-cookie"
 
 import Button from "./button"
-import Error from "./error"
+import Err from "./error"
 import NavBar, { navItem } from "./navBar"
 import Forms from "./forms"
+import Loader from "./loader"
 
 const navigation: navItem[] = [
   { name: "Dashboard", path: "/admin", Icon: HomeIcon, Link },
@@ -38,13 +40,49 @@ const Home: React.FC = () => {
   )
 }
 
-const queryClient = new QueryClient()
+type Session = {
+  session_token: string
+}
 
 const Dashboard: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = React.useState(false)
-  const [userIsAdmin, setUserIsAdmin] = React.useState(false)
+  // const [userIsAdmin, setUserIsAdmin] = React.useState(false)
+  const [cookies, setCookie, removeCookie] = useCookies(["session_token"])
+  const [searchParams] = useSearchParams()
+  const mutation = useMutation(async (token: string): Promise<Session> => {
+    const resp = await fetch(`${process.env.REACT_APP_API_URL}/authenticate`, {
+      body: JSON.stringify({ token }),
+      method: "POST",
+    })
+    if (resp.status !== 200) {
+      throw new Error("Authentication failed: " + resp.statusText)
+    }
+    return await resp.json()
+  })
 
-  if (userIsAdmin) {
+  React.useEffect(() => {
+    const token = searchParams.get("token")
+    if (token) {
+      mutation.mutate(token)
+    }
+  }, [])
+
+  React.useEffect(() => {
+    if (mutation.data?.session_token) {
+      setCookie("session_token", mutation.data.session_token)
+    }
+  }, [mutation.data])
+
+  if (mutation.isLoading) {
+    return <Loader />
+  }
+
+  if (mutation.error) {
+    return <Err message={String(mutation.error)} />
+  }
+
+  // TODO: check if user is admin
+  if (cookies.session_token) {
     return (
       <div className="h-screen flex bg-gray-100">
         <Transition.Root show={sidebarOpen} as={React.Fragment}>
@@ -139,14 +177,8 @@ const Dashboard: React.FC = () => {
           <NavBar items={navigation} />
           <div className="overflow-y-scroll overflow-x-hidden">
             <Routes>
-              <Route path="/">
-                <Home />
-              </Route>
-              <Route path="/forms">
-                <QueryClientProvider client={queryClient}>
-                  <Forms />
-                </QueryClientProvider>
-              </Route>
+              <Route path="/" element={<Home />} />
+              <Route path="/forms" element={<Forms />} />
             </Routes>
           </div>
         </div>
@@ -160,7 +192,7 @@ const Dashboard: React.FC = () => {
   }
   return (
     <>
-      <Error message="User is not allowed to access the admin dashboard" />
+      <Err message="User is not allowed to access the admin dashboard" />
       <div className="mx-auto max-w-lg">
         <div className="justify-around flex">
           <a href={process.env.REACT_APP_ICC_URL}>
