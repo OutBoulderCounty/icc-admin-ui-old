@@ -55,7 +55,7 @@ const Dashboard: React.FC = () => {
       method: "POST",
     })
     if (resp.status !== 200) {
-      throw new Error("Authentication failed: " + resp.statusText)
+      throw resp.statusText
     }
     return await resp.json()
   })
@@ -65,20 +65,62 @@ const Dashboard: React.FC = () => {
     if (token) {
       mutation.mutate(token)
     }
-  }, [])
+  }, [searchParams])
 
   React.useEffect(() => {
     if (mutation.data?.session_token) {
       setCookie("session_token", mutation.data.session_token)
     }
-  }, [mutation.data])
+  }, [mutation.data, setCookie])
 
   if (mutation.isLoading) {
     return <Loader />
   }
 
   if (mutation.error) {
-    return <Err message={String(mutation.error)} />
+    return (
+      <div className="bg-white min-h-full px-4 py-16 sm:px-6 sm:py-24 md:grid md:place-items-center lg:px-8">
+        <div className="max-w-max mx-auto">
+          <main className="sm:flex">
+            <div className="sm:ml-6">
+              <div>
+                <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight sm:text-5xl">
+                  Error
+                </h1>
+                <p className="mt-1 text-base text-gray-500">
+                  {String(mutation.error)}
+                </p>
+                <p>
+                  You may not have permission to view this resource. Please
+                  contact{" "}
+                  <a
+                    href="mailto:cwinters@outboulder.org"
+                    className="font-medium text-indigo-600 hover:text-indigo-500"
+                  >
+                    Clark Winters
+                  </a>{" "}
+                  if you believe you should be an ICC administrator.
+                </p>
+              </div>
+              <div className="mt-10 flex space-x-3">
+                <Link
+                  to="/login"
+                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                >
+                  Try again
+                </Link>
+                <a
+                  href={process.env.REACT_APP_ICC_URL}
+                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                >
+                  ICC Home
+                </a>
+              </div>
+            </div>
+          </main>
+        </div>
+      </div>
+    )
   }
 
   // TODO: check if user is admin
@@ -187,7 +229,8 @@ const Dashboard: React.FC = () => {
   }
   const logoutFn = () => {
     console.log("should be logging out now")
-    // TODO: logout
+    removeCookie("session_token")
+    // TODO: for real logout to revoke session tokens
     return null
   }
   return (

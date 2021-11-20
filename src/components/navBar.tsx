@@ -2,6 +2,7 @@ import * as React from "react"
 import { Disclosure } from "@headlessui/react"
 import { MenuIcon, XIcon } from "@heroicons/react/outline"
 import { useLocation, LinkProps } from "react-router-dom"
+import { useCookies } from "react-cookie"
 
 import Button from "./button"
 
@@ -42,9 +43,11 @@ const NavItem: React.FC<navItem> = (item) => {
 }
 
 const NavBar: React.FC<navOptions> = ({ items }) => {
+  const [, , removeCookie] = useCookies(["session_token"])
   const logoutFn = () => {
     console.log("loggin out")
-    // TODO: logout
+    removeCookie("session_token")
+    // TODO: for real logout to revoke session tokens
     // logout({
     //   returnTo: window.location.origin,
     // })
