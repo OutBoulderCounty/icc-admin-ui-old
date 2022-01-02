@@ -1,5 +1,5 @@
 import * as React from "react"
-import { useQuery } from "react-query"
+import { useQuery} from "react-query"
 
 import Loader from "./loader"
 import ErrorComponent from "./error"
@@ -10,6 +10,7 @@ type ActiveProps = {
 }
 
 const Active: React.FC<ActiveProps> = ({ isActive, className, children }) => {
+
   return (
     <span
       className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${className} ${
@@ -50,12 +51,31 @@ const Forms: React.FC = () => {
       ).json()
     }
   )
+
+  /*
+    https://react-query.tanstack.com/quick-start  
+
+    data: resolved data
+    isLoading: boolean; if fails to fetch
+    error: default null, error object for the query if error was thrown
+
+    Form builder:
+    user needs create form object, click a button create a new form
+    user gets routed to create forms get request: /forms
+    LOOK AT provider forms.tsx line 129 and look at form.tsx (provider ui)
+
+    type of the element
+
+    Need a PUT request: /form
+    POST request :/form
+  */
+
   if (isLoading) {
     return <Loader />
   }
-  if (error) {
-    return <ErrorComponent message={String(error)} />
-  }
+  // if (error) {
+  //   return <ErrorComponent message={String(error)} />
+  // }
   return (
     <div className="flex flex-col h-full">
       <div className="-my-2 sm:-mx-6 lg:-mx-8">
@@ -126,3 +146,13 @@ const Forms: React.FC = () => {
 }
 
 export default Forms
+
+/*
+  username
+  password
+  form
+  inputs
+  error handling
+  authentication
+  focus on delete request later  
+*/ 

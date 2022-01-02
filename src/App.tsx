@@ -1,13 +1,25 @@
 import * as React from "react"
-import { BrowserRouter } from "react-router-dom"
+import { Routes, Route, useParams } from "react-router-dom"
 
 import Dash from "./components/dash"
+import NavBar from "./components/navBar"
+import Footer from "./components/footer"
+import Forms from "./components/forms"
+import Form from "./components/form"
 
 const App: React.FC = () => {
+  
   return (
-    <BrowserRouter>
-      <Dash />
-    </BrowserRouter>
+    <>
+      <NavBar />
+        <Routes>
+          <Route path="/" element={<Dash />} />        
+          <Route path="/forms" element={<Forms />} />
+          <Route path="/form" element={<Form />} />
+          {/* <Route path="/forms/:id" element={<Form />} /> */}
+        </Routes>
+      <Footer />
+    </>    
   )
 }
 

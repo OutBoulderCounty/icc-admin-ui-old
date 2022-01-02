@@ -136,7 +136,7 @@ const Dashboard: React.FC = () => {
         </Transition.Root>
 
         <div className="flex flex-col w-0 flex-1">
-          <NavBar items={navigation} />
+          {/* <NavBar items={navigation} /> */}
           <div className="overflow-y-scroll overflow-x-hidden">
             <Routes>
               <Route path="/">
