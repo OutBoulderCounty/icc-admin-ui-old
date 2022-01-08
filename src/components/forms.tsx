@@ -1,5 +1,5 @@
 import * as React from "react"
-import { useQuery} from "react-query"
+import { useQuery } from "react-query"
 
 import Loader from "./loader"
 import ErrorComponent from "./error"
@@ -10,7 +10,6 @@ type ActiveProps = {
 }
 
 const Active: React.FC<ActiveProps> = ({ isActive, className, children }) => {
-
   return (
     <span
       className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${className} ${
@@ -29,12 +28,16 @@ type Form = {
   live: boolean
 }
 
+type Forms = {
+  forms: Form[]
+}
+
 type Error = {
   error: string
 }
 
 const Forms: React.FC = () => {
-  const { data, isLoading, error } = useQuery<Form[], Error>(
+  const { data, isLoading, error } = useQuery<Forms, Error>(
     "forms",
     async () => {
       const audience = "https://api.inclusivecareco.org"
@@ -42,9 +45,8 @@ const Forms: React.FC = () => {
       // TODO: authenticate
       const token = ""
       return await (
-        await fetch(`${process.env.GATSBY_API_URL}/forms`, {
+        await fetch(`${process.env.REACT_APP_API_URL}/forms`, {
           headers: {
-            Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
         })
@@ -70,7 +72,7 @@ const Forms: React.FC = () => {
     POST request :/form
   */
 
-  if (isLoading) return <Loader /> 
+  if (isLoading) return <Loader />
 
   // if (error) {
   //   return <ErrorComponent message={String(error)} />
@@ -107,7 +109,7 @@ const Forms: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="overflow-y-scroll">
-                {data?.map((form, formIdx) => (
+                {data?.forms.map((form, formIdx) => (
                   <tr
                     key={form._id}
                     className={formIdx % 2 === 0 ? "bg-white" : "bg-gray-50"}
@@ -154,4 +156,4 @@ export default Forms
   error handling
   authentication
   focus on delete request later  
-*/ 
+*/

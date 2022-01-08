@@ -8,20 +8,22 @@ import Forms from "./components/forms"
 import Form from "./components/form"
 import { QueryClient, QueryClientProvider } from "react-query"
 
+const queryClient = new QueryClient()
 
 const App: React.FC = () => {
-  
   return (
     <>
       <NavBar />
+      <QueryClientProvider client={queryClient}>
         <Routes>
-          <Route path="/" element={<Dash />} />        
-          {/* <Route path="/forms" element={<Forms />} /> */}
+          <Route path="/" element={<Dash />} />
+          <Route path="/forms" element={<Forms />} />
           <Route path="/form" element={<Form />} />
           {/* <Route path="/forms/:id" element={<Form />} /> */}
         </Routes>
+      </QueryClientProvider>
       <Footer />
-    </>    
+    </>
   )
 }
 
