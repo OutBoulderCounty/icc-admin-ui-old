@@ -70,9 +70,8 @@ const Forms: React.FC = () => {
     POST request :/form
   */
 
-  if (isLoading) {
-    return <Loader />
-  }
+  if (isLoading) return <Loader /> 
+
   // if (error) {
   //   return <ErrorComponent message={String(error)} />
   // }

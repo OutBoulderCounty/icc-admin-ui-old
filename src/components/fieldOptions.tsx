@@ -3,17 +3,34 @@ import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, SelectorIcon } from '@heroicons/react/solid'
 
 const people = [
-  { id: 1, name: 'Wade Cooper' },
-  { id: 2, name: 'Arlene Mccoy' },
-  { id: 3, name: 'Devon Webb' },
-  { id: 4, name: 'Tom Cook' },
-  { id: 5, name: 'Tanya Fox' },
-  { id: 6, name: 'Hellen Schmidt' },
-  { id: 7, name: 'Caroline Schultz' },
-  { id: 8, name: 'Mason Heaney' },
-  { id: 9, name: 'Claudie Smitham' },
-  { id: 10, name: 'Emil Schaefer' },
+  { id: 1, name: 'Text' },
+  { id: 2, name: 'Text Area' },
+  { id: 3, name: 'Number' },
+  { id: 4, name: 'Select' },
+  { id: 5, name: 'Radio Buttons'},
+  { id: 6, name: 'Checkboxes'},
+  { id: 7, name: 'Header'},
+  { id: 8, name: 'Line'}
 ]
+
+  /*
+  react final form use as an example or use this demo
+  https://github.com/final-form/builder-demo
+
+  top input form name
+  field type define each individual form element; text, number; client is able to use selected form element
+  field label describe the form
+  field categories (may not be used)
+  */ 
+
+  //use ReactSelect for select element ON OTHER DIRECTORY
+  //react-select/creatable 2nd select element MAY NOT BE USED 
+
+  /*
+  1. NEED A SAVE FORM BUTTON 
+  2. NEED CONTROLLED INPUTS
+  3. LOOK AT OLDER DIRECTORY FUNCTIONALITY
+  */
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
@@ -21,13 +38,15 @@ function classNames(...classes: string[]) {
 
 export default function FieldOptions() {
   const [selected, setSelected] = useState(people[3])
+  const [formName, setFormName] = useState('') //name input
+  const [isChecked, setIsChecked] = useState(false); //checkbox
 
   return (
     <div className="ml-6 mt-8 md:w-1/2">
       <Listbox value={selected} onChange={setSelected}>
         {({ open }) => (
           <>
-            <Listbox.Label className="block text-sm font-medium text-gray-700">Assigned to</Listbox.Label>
+            <Listbox.Label className="block text-sm font-medium text-gray-700">Field Type: </Listbox.Label>
             <div className="mt-1 relative">
               <Listbox.Button className="bg-white relative w-full border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                 <span className="block truncate">{selected.name}</span>
@@ -83,23 +102,23 @@ export default function FieldOptions() {
       </Listbox>
       <div className='mt-8'>
         <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-          Email
+          Field Label: 
         </label>
         <div className="mt-1">
           <input
-            type="email"
-            name="email"
-            id="email"
+            type="text"
+            name="fieldLabel"
+            id="fieldLabel"
             className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-400 rounded-md py-4"
-            placeholder="you@example.com"
+            placeholder="Name:"
           />
         </div>
       </div> 
-      <div className="mt-8">
+      {/* <div className="mt-8">
         <Listbox value={selected} onChange={setSelected}>
           {({ open }) => (
             <>
-              <Listbox.Label className="block text-sm font-medium text-gray-700">Assigned to</Listbox.Label>
+              <Listbox.Label className="block text-sm font-medium text-gray-700">Field Category: </Listbox.Label>
               <div className="mt-1 relative">
                 <Listbox.Button className="bg-white relative w-full border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                   <span className="block truncate">{selected.name}</span>
@@ -153,7 +172,8 @@ export default function FieldOptions() {
             </>
           )}
         </Listbox>        
-      </div>
+      </div> */}
+
       <fieldset className="space-y-5 mt-4">
         <legend className="sr-only">Notifications</legend>
         <div className="relative flex items-start">
@@ -170,22 +190,24 @@ export default function FieldOptions() {
               name="comments"
               type="checkbox"
               className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
+              onChange={() => setIsChecked(!isChecked)}
+              checked={isChecked}
             />
           </div>
         </div>
       </fieldset>
       <div className="mt-8 flex justify-around w-full">
-        <button
+        <button 
           type="button"
-          className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-violet hover:bg-violet-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          className="items-center py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-violet hover:bg-violet-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 w-24 text-center"
         >
-          Button text
+          Add
         </button>
         <button
           type="button"
-          className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-violet hover:bg-violet-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          className="items-center py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-violet hover:bg-violet-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 w-24 text-center"
         >
-          Button text
+          Reset
         </button>              
       </div>                            
     </div>    
