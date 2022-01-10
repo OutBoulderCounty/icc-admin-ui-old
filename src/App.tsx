@@ -18,8 +18,8 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/" element={<Dash />} />
           <Route path="/forms" element={<Forms />} />
-          <Route path="/form" element={<Form />} />
-          {/* <Route path="/forms/:id" element={<Form />} /> */}
+          {/* <Route path="/form" element={<Form />} /> */}
+          <Route path="/forms/:id" element={<Form />} />
         </Routes>
       </QueryClientProvider>
       <Footer />

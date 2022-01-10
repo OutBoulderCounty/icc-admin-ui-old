@@ -22,7 +22,7 @@ const Active: React.FC<ActiveProps> = ({ isActive, className, children }) => {
 }
 
 type Form = {
-  _id: string
+  id: number
   name: string
   required: boolean
   live: boolean
@@ -111,7 +111,7 @@ const Forms: React.FC = () => {
               <tbody className="overflow-y-scroll">
                 {data?.forms.map((form, formIdx) => (
                   <tr
-                    key={form._id}
+                    key={form.id}
                     className={formIdx % 2 === 0 ? "bg-white" : "bg-gray-50"}
                   >
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
@@ -129,7 +129,7 @@ const Forms: React.FC = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <a
-                        href="#"
+                        href={`/forms/${form.id}`}
                         className="text-violet hover:text-violet-darkest"
                       >
                         Edit
